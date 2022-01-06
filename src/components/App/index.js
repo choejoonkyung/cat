@@ -23,6 +23,8 @@ class App {
         }
       },
     });
+
+    this.init();
   }
 
   // App 컴포넌트에도 setState 함수 정의하기
@@ -33,5 +35,18 @@ class App {
       isRoot: this.state.isRoot,
       nodes: this.state.nodes,
     });
+  }
+
+  init() {
+    try {
+      const rootNodes = await request();
+      this.setState({
+        ...this.state,
+        isRoot: true,
+        nodes: rootNodes,
+      });
+    } catch (e) {
+      throw new Error(`무언가 잘못 되었습니다! ${e.message}`);
+    }
   }
 }
