@@ -6,7 +6,6 @@ class ImageView {
     this.state = initialState;
     this.$target = document.createElement("div");
     this.$target.className = "Modal ImageView";
-
     $app.appendChild(this.$target);
     this.render();
   }
