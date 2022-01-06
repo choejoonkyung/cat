@@ -2,6 +2,7 @@ import { request } from "../../utils/api.js";
 import Breadcrumb from "../Breadcrumb/Breadcrumb.js";
 import Nodes from "../Nodes/Nodes.js";
 import ImageView from "../ImageView/ImageView.js";
+import Loading from "../Loading/Loading.js";
 
 class App {
   constructor($app) {
@@ -10,6 +11,7 @@ class App {
       nodes: [],
       depth: [],
       selectedFilePath: null,
+      isLoading: true,
     };
 
     this.breadcrumb = new Breadcrumb({
@@ -26,12 +28,17 @@ class App {
       onClick: async (node) => {
         try {
           if (node.type === "DIRECTORY") {
+            this.setState({
+              ...this.state,
+              isLoading: true,
+            });
             const nextNodes = await request(node.id);
             this.setState({
               ...this.state,
               depth: [...this.state.depth, node],
               nodes: nextNodes,
               isRoot: false,
+              isLoading: false,
             });
           } else if (node.type === "FILE") {
             this.setState({
@@ -43,6 +50,10 @@ class App {
       },
       onBackClick: async () => {
         try {
+          this.setState({
+            ...this.state,
+            isLoading: true,
+          });
           const nextState = { ...this.state };
           nextState.depth.pop();
 
@@ -57,6 +68,7 @@ class App {
               ...nextState,
               isRoot: true,
               nodes: rootNodes,
+              isLoading: false,
             });
           } else {
             const prevNodes = await request(prevNodeId);
@@ -64,6 +76,7 @@ class App {
               ...nextNodes,
               isRoot: false,
               nodes: prevNodes,
+              isLoading: false,
             });
           }
         } catch (e) {}
@@ -75,12 +88,14 @@ class App {
       initialState: this.state.selectedNodeImage,
     });
 
+    this.loading = new Loading({ $app, initialState: this.state.isLoading });
+
     this.init();
   }
 
-  // App 컴포넌트에도 setState 함수 정의하기
   setState(nextState) {
     this.state = nextState;
+    this.loading.setState(this.state.isLoading);
     this.breadcrumb.setState(this.state.depth);
     this.nodes.setState({
       isRoot: this.state.isRoot,
@@ -96,6 +111,7 @@ class App {
         ...this.state,
         isRoot: true,
         nodes: rootNodes,
+        isLoading: false,
       });
     } catch (e) {
       console.log(e);
