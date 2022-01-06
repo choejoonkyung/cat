@@ -18,6 +18,16 @@ body {
   height: 600px;
 }
 
+.app ul {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+}
+
+.app ul li {
+  cursor: pointer;
+}
+
 .Nodes {
   display: flex;
   flex-direction: row;
@@ -63,7 +73,7 @@ body {
   position: fixed;
   left: 0;
   top: 0;
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .Modal > div {

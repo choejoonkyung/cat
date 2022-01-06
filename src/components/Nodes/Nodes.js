@@ -23,16 +23,16 @@ class Nodes {
               : "./assets/directory.png";
 
           return `
-            <div class="Node" data-node-id="${node.id}">
+            <li class="Node" data-node-id="${node.id}">
               <img src="${iconPath}" />
-              <div>${node.name}</div>
-            </div>
+              <p>${node.name}</p>
+            </li>
           `;
         })
         .join("");
 
       this.$target.innerHTML = !this.state.isRoot
-        ? `<div class="Node"><img src="/assets/prev.png"></div>${nodesTemplate}`
+        ? `<li class="Node"><img src="/assets/prev.png"></li>${nodesTemplate}`
         : nodesTemplate;
     }
 
