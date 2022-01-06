@@ -21,3 +21,5 @@ class Breadcrumb {
       .join("")}`;
   }
 }
+
+export default Breadcrumb;

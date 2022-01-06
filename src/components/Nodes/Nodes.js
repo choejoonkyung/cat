@@ -48,3 +48,5 @@ class Nodes {
     });
   }
 }
+
+export default Nodes;

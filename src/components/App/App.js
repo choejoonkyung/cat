@@ -1,3 +1,7 @@
+import { request } from "../../utils/api.js";
+import Breadcrumb from "../Breadcrumb/Breadcrumb.js";
+import Nodes from "../Nodes/Nodes.js";
+
 class App {
   constructor($app) {
     this.state = {
@@ -37,7 +41,7 @@ class App {
     });
   }
 
-  init() {
+  async init() {
     try {
       const rootNodes = await request();
       this.setState({
@@ -50,3 +54,5 @@ class App {
     }
   }
 }
+
+export default App;
