@@ -1,13 +1,15 @@
 import { request } from "../../utils/api.js";
 import Breadcrumb from "../Breadcrumb/Breadcrumb.js";
 import Nodes from "../Nodes/Nodes.js";
+import ImageView from "../ImageView/ImageView.js";
 
 class App {
   constructor($app) {
     this.state = {
-      isRoot: false,
+      isRoot: true,
       nodes: [],
       depth: [],
+      selectedFilePath: null,
     };
 
     this.breadcrumb = new Breadcrumb({
@@ -21,11 +23,56 @@ class App {
         isRoot: this.state.isRoot,
         nodes: this.state.nodes,
       },
-      onClick: (node) => {
-        if (node.type === "DIRECTORY") {
-        } else if (node.type === "FILE") {
-        }
+      onClick: async (node) => {
+        try {
+          if (node.type === "DIRECTORY") {
+            const nextNodes = await request(node.id);
+            this.setState({
+              ...this.state,
+              depth: [...this.state.depth, node],
+              nodes: nextNodes,
+              isRoot: false,
+            });
+          } else if (node.type === "FILE") {
+            this.setState({
+              ...this.state,
+              selectedFilePath: node.filePath,
+            });
+          }
+        } catch (e) {}
       },
+      onBackClick: async () => {
+        try {
+          const nextState = { ...this.state };
+          nextState.depth.pop();
+
+          const prevNodeId =
+            nextState.depth.length === 0
+              ? null
+              : nextState.depth[nextState.depth.length - 1].id;
+
+          if (prevNodeId === null) {
+            const rootNodes = await request();
+            this.setState({
+              ...nextState,
+              isRoot: true,
+              nodes: rootNodes,
+            });
+          } else {
+            const prevNodes = await request(prevNodeId);
+            this.setState({
+              ...nextNodes,
+              isRoot: false,
+              nodes: prevNodes,
+            });
+          }
+        } catch (e) {}
+      },
+    });
+
+    this.imageView = new ImageView({
+      $app,
+      initialState: this.state.selectedNodeImage,
     });
 
     this.init();
@@ -39,6 +86,7 @@ class App {
       isRoot: this.state.isRoot,
       nodes: this.state.nodes,
     });
+    this.imageView.setState(this.state.selectedFilePath);
   }
 
   async init() {
@@ -50,6 +98,7 @@ class App {
         nodes: rootNodes,
       });
     } catch (e) {
+      console.log(e);
       throw new Error(`무언가 잘못 되었습니다! ${e.message}`);
     }
   }
