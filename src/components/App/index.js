@@ -6,12 +6,12 @@ class App {
       depth: [],
     };
 
-    new Breadcrumb({
+    this.breadcrumb = new Breadcrumb({
       $app,
       initialState: this.state.depth,
     });
 
-    new Nodes({
+    this.nodes = new Nodes({
       $app,
       initialState: {
         isRoot: this.state.isRoot,
@@ -22,6 +22,16 @@ class App {
         } else if (node.type === "FILE") {
         }
       },
+    });
+  }
+
+  // App 컴포넌트에도 setState 함수 정의하기
+  setState(nextState) {
+    this.state = nextState;
+    this.breadcrumb.setState(this.state.depth);
+    this.nodes.setState({
+      isRoot: this.state.isRoot,
+      nodes: this.state.nodes,
     });
   }
 }
