@@ -1,8 +1,9 @@
 class Breadcrumb {
-  constructor({ $app, initialState }) {
+  constructor({ $app, initialState, onClick }) {
     this.state = initialState;
     this.$target = document.createElement("nav");
     this.$target.className = "Breadcrumb";
+    this.onClick = onClick;
     $app.appendChild(this.$target);
     this.render();
   }

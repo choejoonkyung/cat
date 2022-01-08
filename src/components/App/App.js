@@ -4,6 +4,8 @@ import Nodes from "../Nodes/Nodes.js";
 import ImageView from "../ImageView/ImageView.js";
 import Loading from "../Loading/Loading.js";
 
+const cache = {};
+
 class App {
   constructor($app) {
     this.state = {
@@ -32,14 +34,25 @@ class App {
               ...this.state,
               isLoading: true,
             });
-            const nextNodes = await request(node.id);
-            this.setState({
-              ...this.state,
-              depth: [...this.state.depth, node],
-              nodes: nextNodes,
-              isRoot: false,
-              isLoading: false,
-            });
+            if (cache[node.id]) {
+              this.setState({
+                ...this.state,
+                depth: [...this.state.depth, node],
+                nodes: cache[node.id],
+                isLoading: false,
+                isRoot: false,
+              });
+            } else {
+              const nextNodes = await request(node.id);
+              this.setState({
+                ...this.state,
+                depth: [...this.state.depth, node],
+                nodes: nextNodes,
+                isLoading: false,
+                isRoot: false,
+              });
+              cache[node.id] = nextNodes;
+            }
           } else if (node.type === "FILE") {
             this.setState({
               ...this.state,
@@ -50,10 +63,6 @@ class App {
       },
       onBackClick: async () => {
         try {
-          this.setState({
-            ...this.state,
-            isLoading: true,
-          });
           const nextState = { ...this.state };
           nextState.depth.pop();
 
@@ -63,20 +72,16 @@ class App {
               : nextState.depth[nextState.depth.length - 1].id;
 
           if (prevNodeId === null) {
-            const rootNodes = await request();
             this.setState({
               ...nextState,
               isRoot: true,
-              nodes: rootNodes,
-              isLoading: false,
+              nodes: cache.root,
             });
           } else {
-            const prevNodes = await request(prevNodeId);
             this.setState({
-              ...nextNodes,
+              ...nextState,
               isRoot: false,
-              nodes: prevNodes,
-              isLoading: false,
+              nodes: cache[prevNodeId],
             });
           }
         } catch (e) {}
@@ -113,6 +118,8 @@ class App {
         nodes: rootNodes,
         isLoading: false,
       });
+      // 캐시에 추가
+      cache.root = rootNodes;
     } catch (e) {
       console.log(e);
       throw new Error(`무언가 잘못 되었습니다! ${e.message}`);
