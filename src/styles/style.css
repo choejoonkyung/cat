@@ -22,6 +22,8 @@ body {
   display: flex;
   flex-wrap: wrap;
   padding: 0;
+  margin: 0;
+  list-style: none;
 }
 
 .app ul li {
@@ -54,15 +56,15 @@ body {
   flex-direction: row;
 }
 
-.Breadcrumb > div {
+.Breadcrumb > ul > li {
   padding: 4px;
 }
 
-.Breadcrumb > div::after {
+.Breadcrumb > ul > li::after {
   content: " -";
 }
 
-.Breadcrumb > div:last-child::after {
+.Breadcrumb > ul > li:last-child::after {
   content: "";
 }
 
