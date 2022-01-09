@@ -6,6 +6,26 @@ class Nodes {
     this.onBackClick = onBackClick;
     $app.appendChild(this.$target);
     this.render();
+
+    this.$target.addEventListener("click", (e) => {
+      const $node = e.target.closest(".Node");
+      if ($node) {
+        const { nodeId } = $node.dataset;
+
+        if (!nodeId) {
+          this.onBackClick();
+          return;
+        }
+
+        const selectedNode = this.state.nodes.find(
+          (node) => node.id === nodeId
+        );
+
+        if (selectedNode) {
+          this.onClick(selectedNode);
+        }
+      }
+    });
   }
 
   setState(nextState) {
@@ -36,20 +56,20 @@ class Nodes {
         : nodesTemplate;
     }
 
-    this.$target.querySelectorAll(".Node").forEach(($node) => {
-      $node.addEventListener("click", () => {
-        const { nodeId } = $node.dataset;
-        if (!nodeId) {
-          this.onBackClick();
-        }
-        const selectedNode = this.state.nodes.find(
-          (node) => node.id === nodeId
-        );
-        if (selectedNode) {
-          this.onClick(selectedNode);
-        }
-      });
-    });
+    // this.$target.querySelectorAll(".Node").forEach(($node) => {
+    //   $node.addEventListener("click", () => {
+    //     const { nodeId } = $node.dataset;
+    //     if (!nodeId) {
+    //       this.onBackClick();
+    //     }
+    //     const selectedNode = this.state.nodes.find(
+    //       (node) => node.id === nodeId
+    //     );
+    //     if (selectedNode) {
+    //       this.onClick(selectedNode);
+    //     }
+    //   });
+    // });
   }
 }
 
