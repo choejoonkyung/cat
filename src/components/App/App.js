@@ -115,6 +115,12 @@ class App {
     this.imageView = new ImageView({
       $app,
       initialState: this.state.selectedNodeImage,
+      onClose: () => {
+        this.setState({
+          ...this.state,
+          selectedFilePath: null,
+        });
+      },
     });
 
     this.loading = new Loading({ $app, initialState: this.state.isLoading });
