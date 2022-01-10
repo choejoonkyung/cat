@@ -35,15 +35,17 @@ class App {
     this.imageView = new ImageView({
       $app,
       initialState: this.state.selectedNodeImage,
-      onClose: () => {
-        this.setState({
-          ...this.state,
-          selectedFilePath: null,
-        });
-      },
+      onClose: () => closeImageView(),
     });
     this.loading = new Loading({ $app, initialState: this.state.isLoading });
     this.init();
+  }
+
+  closeImageView() {
+    this.setState({
+      ...this.state,
+      selectedFilePath: null,
+    });
   }
 
   clickPath(index) {
