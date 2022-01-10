@@ -15,7 +15,7 @@ class ImageView {
   addCloseModalEvent() {
     this.$target.addEventListener("click", (e) => {
       const $clikedNode = e.target;
-      if ($clikedNode.tagName !== "IMG") {
+      if ($clikedNode.className == "Modal ImageView") {
         this.onClose();
       }
     });

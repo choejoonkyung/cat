@@ -35,7 +35,7 @@ class App {
     this.imageView = new ImageView({
       $app,
       initialState: this.state.selectedNodeImage,
-      onClose: () => closeImageView(),
+      onClose: () => this.closeImageView(),
     });
     this.loading = new Loading({ $app, initialState: this.state.isLoading });
     this.init();
