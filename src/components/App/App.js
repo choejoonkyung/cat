@@ -28,65 +28,8 @@ class App {
         isRoot: this.state.isRoot,
         nodes: this.state.nodes,
       },
-      onClick: async (node) => {
-        try {
-          if (node.type === "DIRECTORY") {
-            this.setState({
-              ...this.state,
-              isLoading: true,
-            });
-            if (cache[node.id]) {
-              this.setState({
-                ...this.state,
-                depth: [...this.state.depth, node],
-                nodes: cache[node.id],
-                isLoading: false,
-                isRoot: false,
-              });
-            } else {
-              const nextNodes = await request(node.id);
-              this.setState({
-                ...this.state,
-                depth: [...this.state.depth, node],
-                nodes: nextNodes,
-                isLoading: false,
-                isRoot: false,
-              });
-              cache[node.id] = nextNodes;
-            }
-          } else if (node.type === "FILE") {
-            this.setState({
-              ...this.state,
-              selectedFilePath: node.filePath,
-            });
-          }
-        } catch (e) {}
-      },
-      onBackClick: async () => {
-        try {
-          const nextState = { ...this.state };
-          nextState.depth.pop();
-
-          const prevNodeId =
-            nextState.depth.length === 0
-              ? null
-              : nextState.depth[nextState.depth.length - 1].id;
-
-          if (prevNodeId === null) {
-            this.setState({
-              ...nextState,
-              isRoot: true,
-              nodes: cache.root,
-            });
-          } else {
-            this.setState({
-              ...nextState,
-              isRoot: false,
-              nodes: cache[prevNodeId],
-            });
-          }
-        } catch (e) {}
-      },
+      onClick: (node) => this.clickNode(node),
+      onBackClick: () => this.backClick(),
     });
 
     this.imageView = new ImageView({
@@ -126,6 +69,67 @@ class App {
       depth: nextDepth,
       nodes: cache[nextDepth[nextDepth.length - 1].id],
     });
+  }
+
+  async clickNode(node) {
+    try {
+      if (node.type === "DIRECTORY") {
+        this.setState({
+          ...this.state,
+          isLoading: true,
+        });
+        if (cache[node.id]) {
+          this.setState({
+            ...this.state,
+            depth: [...this.state.depth, node],
+            nodes: cache[node.id],
+            isLoading: false,
+            isRoot: false,
+          });
+        } else {
+          const nextNodes = await request(node.id);
+          this.setState({
+            ...this.state,
+            depth: [...this.state.depth, node],
+            nodes: nextNodes,
+            isLoading: false,
+            isRoot: false,
+          });
+          cache[node.id] = nextNodes;
+        }
+      } else if (node.type === "FILE") {
+        this.setState({
+          ...this.state,
+          selectedFilePath: node.filePath,
+        });
+      }
+    } catch (e) {}
+  }
+
+  backClick() {
+    try {
+      const nextState = { ...this.state };
+      nextState.depth.pop();
+
+      const prevNodeId =
+        nextState.depth.length === 0
+          ? null
+          : nextState.depth[nextState.depth.length - 1].id;
+
+      if (prevNodeId === null) {
+        this.setState({
+          ...nextState,
+          isRoot: true,
+          nodes: cache.root,
+        });
+      } else {
+        this.setState({
+          ...nextState,
+          isRoot: false,
+          nodes: cache[prevNodeId],
+        });
+      }
+    } catch (e) {}
   }
 
   setState(nextState) {
