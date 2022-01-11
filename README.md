@@ -28,4 +28,4 @@ npm start
 
 ### 리뷰
 
-👉 [Wiki](https://programmers.co.kr/skill_check_assignments/100)
+👉 [Wiki](https://github.com/choejoonkyung/programmers-cat-album./wiki)
