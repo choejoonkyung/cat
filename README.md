@@ -27,3 +27,5 @@ npm start
 ```
 
 ### 리뷰
+
+👉 [Wiki](https://programmers.co.kr/skill_check_assignments/100)
