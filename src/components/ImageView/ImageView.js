@@ -13,18 +13,23 @@ class ImageView {
   }
 
   addCloseModalEvent() {
-    this.$target.addEventListener("click", (e) => {
+    const clickOutside = (e) => {
       const $clikedNode = e.target;
       if ($clikedNode.className == "Modal ImageView") {
         this.onClose();
+        this.$target.removeEventListener("click", clickOutside);
       }
-    });
+    };
 
-    window.addEventListener("keydown", (e) => {
+    const pressEsc = (e) => {
       if (e.key === "Escape") {
         this.onClose();
+        window.removeEventListener("keydown", pressEsc);
       }
-    });
+    };
+
+    this.$target.addEventListener("click", clickOutside);
+    window.addEventListener("keydown", pressEsc);
   }
 
   setState(nextState) {
